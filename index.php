@@ -72,6 +72,32 @@ if ( $_POST ) {
     exit( 'Error closing new zip file' );
   }
 
+  // Record download in database for tracking
+  $connection = mysqli_connect( '64.65.32.84', 'dobson_usr', 'GarrotingPer5onate', 'dobson_db' );
+  // Check if we can connect to database
+  if ( mysqli_connect_errno( $connection ) ) {
+    // Error connecting to database
+    error_log('Connection Error : ' . mysqli_connect_error());
+    mysqli_close( $connection );
+  } else {
+    // No error connecting to database
+    // Make SQL statement
+    $sql = "INSERT INTO dobsondev_underscores_downloads (ip_address) VALUES (?)";
+    // Test if SQL statement is valid
+    if ( ! $statement = mysqli_prepare( $connection, $sql ) ) {
+      // SQL statement is not valid
+      error_log('SQL Error : ' . mysqli_connect_error());
+      mysqli_close( $connection );
+    } else {
+      // SQL statement is valid
+      $ip_address = $_SERVER['REMOTE_ADDR'];
+      mysqli_stmt_bind_param( $statement, 's', $ip_address );
+      mysqli_stmt_execute( $statement );
+      mysqli_stmt_close( $statement );
+      mysqli_close( $connection );
+    }
+  }
+
   header("Content-Type: application/zip");
   header("Content-Disposition: attachment; filename=" . $themeGenerator->themeFolderName . ".zip");
   header("Content-Length: " . filesize( $newZipFile ) );
@@ -137,6 +163,10 @@ if ( $_POST ) {
         </p>
       </div><!-- .small-12 .medium-6 .medium-offset-1 columns -->
     </div><!-- .row -->
+
+    <footer class="text-center">
+      &copy; Copyright <?php echo date('Y'); ?> DobsonDev All Rights Reserved &nbsp; | &nbsp; Website Design &amp; Development by <a href="http://dobsondev.com/" alt="DobsonDev | Web Development, Cooking and Coding">DobsonDev</a>
+    </footer>
 
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/what-input.js"></script>

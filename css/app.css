@@ -1,0 +1,24 @@
+body {
+  border-top: 8px solid #2199E8;
+}
+
+footer {
+  padding: 1em;
+  background: #2199E8;
+  color: #DEDECE;
+  position: fixed;
+  bottom: 0%;
+  width: 100%;
+}
+
+footer a {
+  color: #DEDECE;
+  text-decoration: underline;
+}
+
+/* Medium and smaller screens */
+@media screen and (max-width: 40em) {
+  footer {
+    position: static;
+  }
+}
